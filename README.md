@@ -10,6 +10,8 @@
   <img src="https://img.shields.io/badge/Policy-Zero_Falsification-darkred?style=flat-square" alt="Zero Falsification" />
 </p>
 
+<div align="center">
+
 ```
 · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
 :   __   __      _   _     _      ____                       _ _            :
@@ -22,6 +24,8 @@
 :             SOVEREIGN GPU-ACCELERATED OPTIMIZATION ENGINE                 :
 · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
 ```
+
+</div>
 
 > **Yutki-Samadhata** (*युक्ति-समाधाता* — Sanskrit for *Strategic Reasoner & Problem Resolver*) is an indigenous, first-principles, high-performance Linear Programming (LP) optimization engine written in pure Rust with pluggable C++17 SIMD and native NVIDIA CUDA acceleration. Built specifically for massive-scale sparse optimization, it implements the **Primal-Dual Hybrid Gradient (PDHG / PDLP)** algorithm accompanied by independent post-solve verification and zero-falsification hardware integrity.
 
@@ -72,45 +76,45 @@ The engine executes optimization workloads through a 10-step pipeline:
 
 ```mermaid
 flowchart TD
-    subgraph Ingestion & Modeling
-        MPS[MPS File / Analytical LP] --> Ingestion[Model Ingestion & Parser]
-        Ingestion --> LPModel[General LinearProgram Model]
-        LPModel --> Fingerprint[Numerical Fingerprinting & Dynamic Range]
+    subgraph "Ingestion & Modeling"
+        MPS["MPS File / Analytical LP"] --> Ingestion["Model Ingestion & Parser"]
+        Ingestion --> LPModel["General LinearProgram Model"]
+        LPModel --> Fingerprint["Numerical Fingerprinting & Dynamic Range"]
     end
 
-    subgraph Transformation & Presolve
-        Fingerprint --> Presolve[Elementary Presolver]
-        Presolve --> TransMap[Invertible Transformation Map]
-        Presolve --> PresolvedLP[Presolved LP Model]
+    subgraph "Transformation & Presolve"
+        Fingerprint --> Presolve["Elementary Presolver"]
+        Presolve --> TransMap["Invertible Transformation Map"]
+        Presolve --> PresolvedLP["Presolved LP Model"]
     end
 
-    subgraph Preconditioning
-        PresolvedLP --> Scaling[Ruiz Equilibration & Pock-Chambolle Preconditioner]
-        Scaling --> ScaledLP[Equilibrated Matrix & Vectors]
+    subgraph "Preconditioning"
+        PresolvedLP --> Scaling["Ruiz Equilibration & Pock-Chambolle Preconditioner"]
+        Scaling --> ScaledLP["Equilibrated Matrix & Vectors"]
     end
 
-    subgraph Optimization Engine
-        ScaledLP --> PDHGController[PDHG / PDLP Engine]
-        PDHGController <--> BackendTrait[ComputeBackend Trait]
-        BackendTrait <--> CpuRust[CpuRustBackend]
-        BackendTrait <--> CpuCpp[CpuCppBackend (C++17 FFI)]
-        BackendTrait <--> CudaGPU[CudaBackend (NVIDIA GPU)]
-        PDHGController --> NumMon[Numerical Health & Stagnation Monitor]
+    subgraph "Optimization Engine"
+        ScaledLP --> PDHGController["PDHG / PDLP Engine"]
+        PDHGController <--> BackendTrait["ComputeBackend Trait"]
+        BackendTrait <--> CpuRust["CpuRustBackend"]
+        BackendTrait <--> CpuCpp["CpuCppBackend (C++17 FFI)"]
+        BackendTrait <--> CudaGPU["CudaBackend (NVIDIA GPU)"]
+        PDHGController --> NumMon["Numerical Health & Stagnation Monitor"]
         NumMon -.->|Adaptive Restart / Fallback| PDHGController
     end
 
-    subgraph Postsolve & Verification
-        PDHGController --> RawSol[Presolved Space Solution]
-        RawSol --> Postsolve[Invertible Postsolve Restoration]
-        Postsolve --> FinalSol[Original Space Primal/Dual Solution]
-        FinalSol --> Verifier[Independent Solution Verifier]
+    subgraph "Postsolve & Verification"
+        PDHGController --> RawSol["Presolved Space Solution"]
+        RawSol --> Postsolve["Invertible Postsolve Restoration"]
+        Postsolve --> FinalSol["Original Space Primal/Dual Solution"]
+        FinalSol --> Verifier["Independent Solution Verifier"]
         LPModel -.->|Raw Unscaled Problem| Verifier
     end
 
-    subgraph Output & Telemetry
-        Verifier --> Verdict{Verdict: VALID / UNCERTAIN / INVALID}
-        Verdict --> TraceLog[Structured Solver Trace]
-        Verdict --> Benchmark[Benchmark / CLI Telemetry]
+    subgraph "Output & Telemetry"
+        Verifier --> Verdict{"Verdict: VALID / UNCERTAIN / INVALID"}
+        Verdict --> TraceLog["Structured Solver Trace"]
+        Verdict --> Benchmark["Benchmark / CLI Telemetry"]
     end
 ```
 
@@ -160,17 +164,17 @@ With diagonal preconditioning step sizes $\tau \in \mathbb{R}_{++}^n$ (primal) a
 1. **Primal Extrapolation**:
    $$\bar{x}^k = x^k + \theta (x^k - x^{k-1}) \quad (\theta = 1.0)$$
 2. **Dual Ascent & Projection**:
-   $$y^{k+1} = \operatorname{proj}_{\mathcal{Y}} \left( y^k + \sigma \odot (A \bar{x}^k - \operatorname{proj}_{[l_c, u_c]}(A \bar{x}^k)) \right)$$
+   $$y^{k+1} = \mathrm{proj}_{\mathcal{Y}} \left( y^k + \sigma \odot (A \bar{x}^k - \mathrm{proj}_{[l_c, u_c]}(A \bar{x}^k)) \right)$$
 3. **Primal Descent & Box Projection**:
-   $$x^{k+1} = \operatorname{proj}_{[l_v, u_v]} \left( x^k - \tau \odot (c + A^T y^{k+1}) \right)$$
+   $$x^{k+1} = \mathrm{proj}_{[l_v, u_v]} \left( x^k - \tau \odot (c + A^T y^{k+1}) \right)$$
 4. **Ergodic Averaging**:
    Iterates are averaged over time ($x_{\text{avg}} = \frac{1}{K} \sum_{k=1}^K x^k$) to guarantee $O(1/K)$ convergence rates.
 
 ### 4. Convergence & Stopping Criteria
 The solver terminates when normalized primal residual, dual residual, and duality gap fall below specified tolerances:
 $$
-\frac{\| A x - \operatorname{proj}_{[l_c, u_c]}(A x) \|_\infty}{1 + \|u_c - l_c\|_\infty} \le \varepsilon_{\text{primal}}, \quad
-\frac{\| \operatorname{proj}_{[l_v, u_v]}(x - (c + A^T y)) - x \|_\infty}{1 + \|c\|_\infty} \le \varepsilon_{\text{dual}}, \quad
+\frac{\| A x - \mathrm{proj}_{[l_c, u_c]}(A x) \|_\infty}{1 + \|u_c - l_c\|_\infty} \le \varepsilon_{\text{primal}}, \quad
+\frac{\| \mathrm{proj}_{[l_v, u_v]}(x - (c + A^T y)) - x \|_\infty}{1 + \|c\|_\infty} \le \varepsilon_{\text{dual}}, \quad
 \frac{|c^T x - \text{DualObj}(y)|}{1 + |c^T x| + |\text{DualObj}(y)|} \le \varepsilon_{\text{gap}}
 $$
 

@@ -1,3 +1,111 @@
-/target
+# =============================================================================
+# Yutki-Samadhata Production .gitignore
+# Standard security, build artifact, and environment exclusion rules
+# =============================================================================
+
+# --- Rust & Cargo ---
+/target/
+**/*.rs.bk
+*.bk
+cargo-timing*.html
+
+# --- Environment & Sensitive Credentials ---
+# Never commit credentials, secrets, or local environment overrides
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+*.pub
+*.cert
+*.crt
+*.pfx
+*.p12
+*.secret
+*credentials*
+*secret*
+*token*
+
+# --- Local Sovereign Authentication & State ---
+# Ensure local auth DBs, sessions, and recovery codes are never exposed
+auth_store.json
+*.auth.json
+auth.json
+.yutki/
+yutki_auth*
+*.session
+
+# --- Native C++ & CUDA Build Artifacts ---
+*.o
+*.obj
+*.so
+*.so.*
+*.dylib
+*.dll
+*.a
+*.lib
+*.exe
+*.out
+*.app
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+*.ninja
+.ninja_deps
+.ninja_log
+
+# --- Profiling, Benchmarks & Telemetry ---
 benchmark_report.csv
 benchmark_report.json
+*.report.csv
+*.report.json
+perf.data*
+*.perf
+*.nvvp
+*.nvlog
+*.qdrep
+*.nsys-rep
+flamegraph*.svg
+flamegraph/
+solver_output/
+runs/
+
+# --- Logs, Dumps & Diagnostics ---
+*.log
+*.crash
+*.dmp
+core
+core.*
+
+# --- IDEs, Editors & Workspaces ---
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+*.bak
+
+# --- Operating System Artifacts ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# --- AI Assistants & Agent Tooling ---
+.gemini/
+.agents/
+
+# --- Temporary & Scratch Files ---
+tmp/
+temp/
+*.tmp
+scratch/

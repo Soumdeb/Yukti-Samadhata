@@ -27,7 +27,7 @@ flowchart TD
         ScaledLP --> PDHGController[PDHG / PDLP Engine]
         PDHGController <--> BackendTrait[ComputeBackend Trait]
         BackendTrait <--> CpuBackend[CpuBackend]
-        BackendTrait <--> GpuBackend[CudaBackend (Optional)]
+        BackendTrait <--> GpuBackend["CudaBackend (Optional)"]
         PDHGController --> NumMon[Numerical Health Monitor]
         NumMon -.->|Restarts / Stagnation| PDHGController
     end
@@ -41,7 +41,7 @@ flowchart TD
     end
 
     subgraph Output & Reporting
-        Verifier --> Verdict{Verdict: VALID / UNCERTAIN / INVALID}
+        Verifier --> Verdict{"Verdict: VALID / UNCERTAIN / INVALID"}
         Verdict --> TraceLog[Structured Solver Trace]
         Verdict --> Benchmark[Benchmark / CLI Output]
     end
