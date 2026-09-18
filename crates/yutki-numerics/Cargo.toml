@@ -1,0 +1,11 @@
+[package]
+name = "yutki-numerics"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yutki-model = { path = "../yutki-model" }
+yutki-sparse = { path = "../yutki-sparse" }
+thiserror.workspace = true
+serde.workspace = true

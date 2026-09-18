@@ -1,0 +1,14 @@
+[package]
+name = "yutki-gpu"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yutki-model = { path = "../yutki-model" }
+yutki-sparse = { path = "../yutki-sparse" }
+thiserror.workspace = true
+serde.workspace = true
+
+[build-dependencies]
+cc = "1.4.6"

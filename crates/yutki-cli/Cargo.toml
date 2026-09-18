@@ -1,0 +1,22 @@
+[package]
+name = "yutki-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "yutki-samadhata"
+path = "src/main.rs"
+
+[dependencies]
+yutki-model = { path = "../yutki-model" }
+yutki-sparse = { path = "../yutki-sparse" }
+yutki-numerics = { path = "../yutki-numerics" }
+yutki-transform = { path = "../yutki-transform" }
+yutki-gpu = { path = "../yutki-gpu" }
+yutki-lp = { path = "../yutki-lp" }
+yutki-verifier = { path = "../yutki-verifier" }
+yutki-auth = { path = "../yutki-auth" }
+yutki-runtime = { path = "../yutki-runtime" }
+yutki-bench = { path = "../yutki-bench" }
+clap.workspace = true

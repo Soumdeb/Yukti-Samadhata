@@ -1,0 +1,179 @@
+use std::path::PathBuf;
+use std::process::Command;
+use yutki_auth::LocalAuthManager;
+use yutki_model::{parse_mps_file, SolverStatus};
+use yutki_verifier::SolutionVerifier;
+
+#[test]
+fn test_cli_auth_workflow_end_to_end() {
+    let nonce = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let temp_dir = std::env::temp_dir().join(format!("yutki_cli_test_auth_{nonce}"));
+    let auth_path = temp_dir.join("auth_store.json");
+    let auth = LocalAuthManager::new(&auth_path);
+
+    // 1. Signup
+    let (rec_code, session) = auth.signup("operator_cli", "P@ssw0rd1234").unwrap();
+    assert_eq!(session.username, "operator_cli");
+    assert_eq!(rec_code.len(), 19);
+
+    // 2. Login with correct password
+    let login_session = auth.login("operator_cli", "P@ssw0rd1234").unwrap();
+    assert_eq!(login_session.username, "operator_cli");
+
+    // 3. Login with wrong password
+    assert!(auth.login("operator_cli", "WrongPassword!").is_err());
+
+    // 4. Reset password using recovery code
+    let new_rec_code = auth
+        .reset_password("operator_cli", &rec_code, "BrandNewP@ssw0rd5678")
+        .unwrap();
+    assert_ne!(new_rec_code, rec_code);
+
+    // 5. Login with new password
+    let updated_session = auth.login("operator_cli", "BrandNewP@ssw0rd5678").unwrap();
+    assert_eq!(updated_session.username, "operator_cli");
+
+    // 6. Old password fails
+    assert!(auth.login("operator_cli", "P@ssw0rd1234").is_err());
+
+    // 7. Old recovery code fails
+    assert!(auth
+        .reset_password("operator_cli", &rec_code, "AnotherPassword999")
+        .is_err());
+
+    let _ = std::fs::remove_dir_all(temp_dir);
+}
+
+fn workspace_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
+}
+
+#[test]
+fn test_cli_solve_demo_lp_mathematical_precision() {
+    let demo_path = workspace_root().join("examples/demo/production.mps");
+    assert!(
+        demo_path.exists(),
+        "Demo file production.mps must exist at {}",
+        demo_path.display()
+    );
+
+    let problem = parse_mps_file(&demo_path).unwrap();
+    assert_eq!(problem.name, "PRODUCTION_PLANNING");
+    assert_eq!(problem.num_variables(), 3);
+    assert_eq!(problem.num_constraints(), 4);
+
+    let solver = yutki_lp::PdhgSolver::new(yutki_lp::PdhgOptions {
+        primal_tol: 1e-6,
+        dual_tol: 1e-6,
+        gap_tol: 1e-6,
+        max_iterations: 15_000,
+        enable_presolve: true,
+        ..Default::default()
+    });
+
+    let solution = solver.solve_problem(&problem).unwrap();
+    assert_eq!(solution.status, SolverStatus::Optimal);
+    assert_eq!(solution.primal.len(), 3);
+
+    // Expected analytical solution: (10, 10, 10)
+    assert!((solution.primal[0] - 10.0).abs() < 0.1);
+    assert!((solution.primal[1] - 10.0).abs() < 0.1);
+    assert!((solution.primal[2] - 10.0).abs() < 0.1);
+    assert!((solution.objective - (-2350.0)).abs() < 1.0);
+
+    // Independent verification with matching 1e-4 tolerance
+    let tols = yutki_numerics::NumericalTolerances {
+        primal_tol: 1e-4,
+        dual_tol: 1e-4,
+        gap_tol: 1e-4,
+        ..Default::default()
+    };
+    let report = SolutionVerifier::verify(&problem, &solution, &tols);
+    assert_eq!(
+        report.verdict,
+        yutki_verifier::VerificationVerdict::Valid,
+        "Report: {}",
+        report.message
+    );
+    assert!(report.max_violation < 1e-4);
+}
+
+#[test]
+fn test_cli_binary_commands() {
+    let bin_path = env!("CARGO_BIN_EXE_yutki-samadhata");
+    let root = workspace_root();
+
+    // 1. Help flag
+    let output_help = Command::new(bin_path)
+        .current_dir(&root)
+        .arg("--help")
+        .output()
+        .expect("Failed to execute binary");
+    assert!(output_help.status.success());
+    let stdout_help = String::from_utf8_lossy(&output_help.stdout);
+    assert!(stdout_help.contains("Yutki-Samadhata"));
+
+    // 2. Version command
+    let output_version = Command::new(bin_path)
+        .current_dir(&root)
+        .arg("version")
+        .output()
+        .expect("Failed to execute version");
+    assert!(output_version.status.success());
+    let stdout_ver = String::from_utf8_lossy(&output_version.stdout);
+    assert!(stdout_ver.contains("YUTKI-SAMADHATA"));
+    assert!(stdout_ver.contains("0.1.0"));
+
+    // 3. Doctor command
+    let output_doctor = Command::new(bin_path)
+        .current_dir(&root)
+        .arg("doctor")
+        .output()
+        .expect("Failed to execute doctor");
+    assert!(output_doctor.status.success());
+    let stdout_doc = String::from_utf8_lossy(&output_doctor.stdout);
+    assert!(stdout_doc.contains("SYSTEM & HARDWARE DOCTOR"));
+    assert!(stdout_doc.contains("CPU Compute Backend"));
+
+    // 4. Direct solve command
+    let output_solve = Command::new(bin_path)
+        .current_dir(&root)
+        .args([
+            "solve",
+            "--file",
+            "examples/demo/production.mps",
+            "--backend",
+            "cpu",
+        ])
+        .output()
+        .expect("Failed to execute solve");
+    assert!(output_solve.status.success());
+    let stdout_solve = String::from_utf8_lossy(&output_solve.stdout);
+    assert!(stdout_solve.contains("OPTIMAL [MATHEMATICALLY VERIFIED]"));
+    assert!(stdout_solve.contains("CHAIRS"));
+    assert!(stdout_solve.contains("TABLES"));
+    assert!(stdout_solve.contains("DESKS"));
+
+    // 5. Benchmark command
+    let output_bench = Command::new(bin_path)
+        .current_dir(&root)
+        .args([
+            "benchmark",
+            "examples/demo",
+            "--backend",
+            "cpu",
+            "--time-limit",
+            "10",
+            "--max-iter",
+            "5000",
+        ])
+        .output()
+        .expect("Failed to execute benchmark");
+    assert!(output_bench.status.success());
+    let stdout_bench = String::from_utf8_lossy(&output_bench.stdout);
+    assert!(stdout_bench.contains("BENCHMARK"));
+    assert!(stdout_bench.contains("production.mps"));
+}

@@ -1,0 +1,12 @@
+[package]
+name = "yutki-transform"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yutki-model = { path = "../yutki-model" }
+yutki-sparse = { path = "../yutki-sparse" }
+yutki-numerics = { path = "../yutki-numerics" }
+thiserror.workspace = true
+serde.workspace = true
