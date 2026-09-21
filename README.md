@@ -308,22 +308,17 @@ For problems where exact corner basic solutions and shadow prices are essential:
 
 ### 3. Engine 2: First-Order PDHG / PDLP Saddle-Point Method
 For hyper-scale sparse linear programs where basis factorization fails due to memory or dense fill-in:
-1. **Minimax Saddle-Point Reformulation:**
-   Introducing auxiliary slack variables $s \in [l_c, u_c]$:
-   $$\min_{x \in [l_x, u_x],\, s \in [l_c, u_c]} \max_{y \in \mathbb{R}^m} \quad \mathcal{L}(x, s, y) = c^T x + y^T (A x - s)$$
-2. **Pock-Chambolle Iteration Steps:**
-   With diagonal preconditioning matrices $\mathcal{T} = \operatorname{diag}(\tau)$ and $\Sigma = \operatorname{diag}(\sigma)$:
-   - **Primal Extrapolation:**
-     $$\bar{x}^k = x^k + \theta (x^k - x^{k-1}) \quad (\theta = 1.0)$$
-   - **Dual Ascent & Projection:**
-     $$y^{k+1} = \operatorname{proj}_{\mathcal{Y}} \left( y^k + \Sigma (A \bar{x}^k - \operatorname{proj}_{[l_c, u_c]}(A \bar{x}^k)) \right)$$
-   - **Primal Descent & Box Projection:**
-     $$x^{k+1} = \operatorname{proj}_{[l_x, u_x]} \left( x^k - \mathcal{T} (c + A^T y^{k+1}) \right)$$
+1. **Minimax Saddle-Point Reformulation**
+
+2. **Pock-Chambolle Iteration Steps**
+   - **Primal Extrapolation**
+   - **Dual Ascent & Projection**
+   - **Primal Descent & Box Projection**
+
 3. **Ergodic Coordinate Averaging:**
-   $$\bar{x}^K = \frac{1}{K} \sum_{k=1}^K x^k, \quad \bar{y}^K = \frac{1}{K} \sum_{k=1}^K y^k$$
-   Guarantees guaranteed $O(1/K)$ convergence rate on convex-concave saddle-point problems.
+
 4. **Adaptive Restarts:**
-   Monitors normalized KKT residuals; if residual reduction stagnates over $N$ iterations, iterates are restarted from the current ergodic average to accelerate convergence.
+
 
 ---
 
