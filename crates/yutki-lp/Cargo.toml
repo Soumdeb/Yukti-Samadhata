@@ -11,5 +11,6 @@ yutki-numerics = { path = "../yutki-numerics" }
 yutki-gpu = { path = "../yutki-gpu" }
 yutki-transform = { path = "../yutki-transform" }
 yutki-runtime = { path = "../yutki-runtime" }
+yutki-verifier = { path = "../yutki-verifier" }
 thiserror.workspace = true
 serde.workspace = true

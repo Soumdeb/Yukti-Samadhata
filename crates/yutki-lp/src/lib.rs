@@ -13,6 +13,56 @@ use yutki_numerics::{MonitorVerdict, NumericalMonitor, NumericalTolerances, Tole
 use yutki_sparse::{norm_l2, CsrMatrix};
 use yutki_transform::{postsolve, presolve};
 
+pub mod ipm;
+pub use ipm::{IpmOptions, IpmSolver, IpmStatus, IpmTelemetry};
+
+pub mod simplex;
+pub use simplex::{RevisedSimplexSolver, SimplexOptions, SimplexStatus, SimplexTelemetry};
+
+pub mod strategy;
+pub use strategy::*;
+
+/// Optimization solver algorithm selection.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SolverAlgorithm {
+    /// Automatically select optimal algorithm based on problem dimensions
+    #[default]
+    Auto,
+    /// Revised Simplex algorithm with 2-Phase method and Basis Factorization (exact corner BFS)
+    Simplex,
+    /// Primal-Dual Hybrid Gradient first-order engine (large-scale sparse, GPU acceleration)
+    Pdhg,
+    /// Interior Point Method (Barrier / Primal-Dual Path-Following)
+    Ipm,
+}
+
+impl std::str::FromStr for SolverAlgorithm {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "auto" => Ok(SolverAlgorithm::Auto),
+            "simplex" | "revised-simplex" | "revised_simplex" => Ok(SolverAlgorithm::Simplex),
+            "pdhg" | "pdlp" => Ok(SolverAlgorithm::Pdhg),
+            "ipm" | "interior-point" | "interior_point" => Ok(SolverAlgorithm::Ipm),
+            other => Err(format!(
+                "Unknown solver algorithm '{other}'. Valid options: auto, simplex, pdhg, ipm"
+            )),
+        }
+    }
+}
+
+impl std::fmt::Display for SolverAlgorithm {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SolverAlgorithm::Auto => write!(f, "auto"),
+            SolverAlgorithm::Simplex => write!(f, "simplex"),
+            SolverAlgorithm::Pdhg => write!(f, "pdhg"),
+            SolverAlgorithm::Ipm => write!(f, "ipm"),
+        }
+    }
+}
+
 /// Termination status outcomes from the PDHG solver.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PdhgStatus {
@@ -1089,12 +1139,12 @@ mod tests {
         )
         .unwrap();
 
-        let cpp_backend = Arc::new(yutki_gpu::CpuCppBackend::new());
-        let solver = PdhgSolver::new_with_backend(PdhgOptions::default(), cpp_backend);
+        let custom_backend = Arc::new(yutki_gpu::CpuRustBackend::new());
+        let solver = PdhgSolver::new_with_backend(PdhgOptions::default(), custom_backend);
 
         let res = solver.solve(&lp).unwrap();
         assert_eq!(res.status, PdhgStatus::Converged);
-        assert_eq!(res.backend_name, "CPU (C++ Native)");
+        assert_eq!(res.backend_name, "CPU (Rust Native)");
         assert!((res.primal_solution[0] - 2.0).abs() < 1e-4);
     }
 
