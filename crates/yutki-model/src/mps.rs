@@ -557,12 +557,31 @@ ENDATA
 
     #[test]
     fn test_production_mps_analytical_solution() {
-        let path = if Path::new("examples/demo/production.mps").exists() {
-            std::path::PathBuf::from("examples/demo/production.mps")
-        } else {
-            std::path::PathBuf::from("../../examples/demo/production.mps")
-        };
-        let problem = parse_mps_file(path).unwrap();
+        let mps_data = r#"NAME          PRODUCTION_PLANNING
+ROWS
+ N  PROFIT
+ L  LUMBER
+ L  CARPENTRY
+ L  FINISHING
+ L  DEMAND_T
+COLUMNS
+    CHAIRS    PROFIT     -45.0   LUMBER      5.0
+    CHAIRS    CARPENTRY    1.0   FINISHING   2.0
+    TABLES    PROFIT     -80.0   LUMBER     20.0
+    TABLES    CARPENTRY    2.0   FINISHING   1.0
+    TABLES    DEMAND_T     1.0
+    DESKS     PROFIT    -110.0   LUMBER     15.0
+    DESKS     CARPENTRY    3.0   FINISHING   2.0
+RHS
+    RHS1      LUMBER     400.0   CARPENTRY  60.0
+    RHS1      FINISHING   50.0   DEMAND_T   15.0
+BOUNDS
+ UP BND1      CHAIRS      50.0
+ UP BND1      TABLES      20.0
+ UP BND1      DESKS       25.0
+ENDATA
+"#;
+        let problem = parse_mps_str(mps_data).unwrap();
         assert_eq!(problem.name, "PRODUCTION_PLANNING");
         assert_eq!(problem.num_variables(), 3);
         assert_eq!(problem.num_constraints(), 4);
@@ -574,13 +593,9 @@ ENDATA
 
         // Verify constraints at known solution
         let ax = problem.a.mul_vec(&known_x).unwrap();
-        // LUMBER: 5(10) + 20(10) + 15(10) = 400.0 <= 400.0
         assert_eq!(ax[0], 400.0);
-        // CARPENTRY: 1(10) + 2(10) + 3(10) = 60.0 <= 60.0
         assert_eq!(ax[1], 60.0);
-        // FINISHING: 2(10) + 1(10) + 2(10) = 50.0 <= 50.0
         assert_eq!(ax[2], 50.0);
-        // DEMAND_T: 10.0 <= 15.0
         assert_eq!(ax[3], 10.0);
     }
 
