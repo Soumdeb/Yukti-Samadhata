@@ -4,6 +4,9 @@
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+pub mod factorization;
+pub use factorization::LuDecomposition;
+
 #[derive(Error, Debug, PartialEq)]
 pub enum SparseError {
     #[error("Dimension mismatch: expected {expected}, found {found}")]
@@ -31,6 +34,9 @@ pub enum SparseError {
         index: usize,
         value: f64,
     },
+
+    #[error("Singular matrix encountered during factorization: pivot at step {step} is {value}")]
+    SingularMatrix { step: usize, value: f64 },
 }
 
 /// Structural and numerical summary statistics for sparse matrices.
