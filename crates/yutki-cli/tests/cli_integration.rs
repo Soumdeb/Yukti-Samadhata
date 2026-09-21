@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::process::Command;
 use yutki_auth::LocalAuthManager;
-use yutki_model::{parse_mps_file, SolverStatus};
+use yutki_model::parse_mps_file;
 use yutki_verifier::SolutionVerifier;
 
 #[test]
@@ -52,37 +52,25 @@ fn workspace_root() -> PathBuf {
 }
 
 #[test]
-fn test_cli_solve_demo_lp_mathematical_precision() {
-    let demo_path = workspace_root().join("examples/demo/production.mps");
+fn test_cli_solve_netlib_afiro_mathematical_precision() {
+    let afiro_path = workspace_root().join("datasets/netlib/afiro.mps");
     assert!(
-        demo_path.exists(),
-        "Demo file production.mps must exist at {}",
-        demo_path.display()
+        afiro_path.exists(),
+        "Netlib file afiro.mps must exist at {}",
+        afiro_path.display()
     );
 
-    let problem = parse_mps_file(&demo_path).unwrap();
-    assert_eq!(problem.name, "PRODUCTION_PLANNING");
-    assert_eq!(problem.num_variables(), 3);
-    assert_eq!(problem.num_constraints(), 4);
+    let problem = parse_mps_file(&afiro_path).unwrap();
+    assert_eq!(problem.name, "AFIRO");
+    assert_eq!(problem.num_variables(), 32);
+    assert_eq!(problem.num_constraints(), 27);
 
-    let solver = yutki_lp::PdhgSolver::new(yutki_lp::PdhgOptions {
-        primal_tol: 1e-6,
-        dual_tol: 1e-6,
-        gap_tol: 1e-6,
-        max_iterations: 15_000,
-        enable_presolve: true,
-        ..Default::default()
-    });
-
-    let solution = solver.solve_problem(&problem).unwrap();
-    assert_eq!(solution.status, SolverStatus::Optimal);
-    assert_eq!(solution.primal.len(), 3);
-
-    // Expected analytical solution: (10, 10, 10)
-    assert!((solution.primal[0] - 10.0).abs() < 0.1);
-    assert!((solution.primal[1] - 10.0).abs() < 0.1);
-    assert!((solution.primal[2] - 10.0).abs() < 0.1);
-    assert!((solution.objective - (-2350.0)).abs() < 1.0);
+    let lp = yutki_model::LinearProgram::from_lp_problem(problem.clone()).unwrap();
+    let (solution, telemetry) =
+        yutki_lp::RevisedSimplexSolver::solve(&lp, &yutki_lp::SimplexOptions::default()).unwrap();
+    assert_eq!(telemetry.status, yutki_lp::SimplexStatus::Optimal);
+    assert_eq!(solution.primal.len(), 32);
+    assert!((solution.objective - (-464.753142857143)).abs() < 1e-3);
 
     // Independent verification with matching 1e-4 tolerance
     let tols = yutki_numerics::NumericalTolerances {
@@ -144,7 +132,7 @@ fn test_cli_binary_commands() {
         .args([
             "solve",
             "--file",
-            "examples/demo/production.mps",
+            "datasets/netlib/afiro.mps",
             "--backend",
             "cpu",
         ])
@@ -153,16 +141,14 @@ fn test_cli_binary_commands() {
     assert!(output_solve.status.success());
     let stdout_solve = String::from_utf8_lossy(&output_solve.stdout);
     assert!(stdout_solve.contains("OPTIMAL [MATHEMATICALLY VERIFIED]"));
-    assert!(stdout_solve.contains("CHAIRS"));
-    assert!(stdout_solve.contains("TABLES"));
-    assert!(stdout_solve.contains("DESKS"));
+    assert!(stdout_solve.contains("X01"));
 
     // 5. Benchmark command
     let output_bench = Command::new(bin_path)
         .current_dir(&root)
         .args([
             "benchmark",
-            "examples/demo",
+            "datasets/netlib/afiro.mps",
             "--backend",
             "cpu",
             "--time-limit",
@@ -175,5 +161,6 @@ fn test_cli_binary_commands() {
     assert!(output_bench.status.success());
     let stdout_bench = String::from_utf8_lossy(&output_bench.stdout);
     assert!(stdout_bench.contains("BENCHMARK"));
-    assert!(stdout_bench.contains("production.mps"));
+    assert!(stdout_bench.contains("afiro.mps"));
+    assert!(stdout_bench.contains("SOLVED PRIMAL DECISION VARIABLES & VALUES"));
 }
