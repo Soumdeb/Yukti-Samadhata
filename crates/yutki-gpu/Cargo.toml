@@ -9,6 +9,9 @@ yutki-model = { path = "../yutki-model" }
 yutki-sparse = { path = "../yutki-sparse" }
 thiserror.workspace = true
 serde.workspace = true
+rayon.workspace = true
 
-[build-dependencies]
-cc = "1.4.6"
+[lints]
+workspace = true
+
+
