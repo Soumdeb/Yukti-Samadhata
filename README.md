@@ -62,7 +62,6 @@
 - [Getting Started & Installation](#-getting-started--installation)
 - [Command-Line Interface (CLI) Guide](#-command-line-interface-cli-guide)
 - [Rust API Integration Quickstart](#-rust-api-integration-quickstart)
-- [Future Roadmap (MILP, QP, MIQP, MINLP)](#-future-roadmap-milp-qp-miqp-minlp)
 - [Team & Acknowledgments](#-team--acknowledgments)
 - [License](#-license)
 
@@ -545,29 +544,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
----
-
-## 🗺 Future Roadmap (MILP, QP, MIQP, MINLP)
-
-While the initial focus has established a robust continuous LP core (Revised Simplex + PDHG), Yutki-Samadhata is architected for modular extension into mixed-integer and non-linear domains:
-
-```mermaid
-graph TD
-    LP["Continuous LP Core (Complete)<br>• Revised Simplex<br>• First-Order PDHG<br>• IPM"] --> MILP["Mixed-Integer LP (MILP)<br>• Branch-and-Bound Tree<br>• Gomory Mixed-Integer Cuts<br>• Primal Heuristics (Feasibility Pump)"]
-    LP --> QP["Quadratic Programming (QP)<br>• Convex Quadratic Objective<br>• KKT Projected Gradient"]
-    MILP --> MIQP["Mixed-Integer QP (MIQP)<br>• Non-linear Refinery Blending"]
-    QP --> MIQP
-    MIQP --> MINLP["General MINLP<br>• Outer Approximation<br>• Sequential Quadratic Programming"]
-```
-
-- [x] **Milestone 1 (Complete):** Ground-up continuous LP core with Revised Simplex, scaled LU factorization, and first-order PDHG.
-- [x] **Milestone 2 (Complete):** Rayon multi-core CPU and native NVIDIA CUDA Driver API GPU acceleration with PTX kernels.
-- [x] **Milestone 3 (Complete):** Ruiz matrix preconditioning, conditioning analysis, and independent solution verifier (`yutki-verifier`).
-- [ ] **Milestone 4 (In Progress):** Branch-and-Bound manager with Gomory cutting planes and strong branching for Mixed-Integer Linear Programs (MILP).
-- [ ] **Milestone 5 (Planned):** Convex Quadratic Programming (QP) solver for mean-variance portfolio allocation and hydrocracker yield optimization.
-- [ ] **Milestone 6 (Planned):** Non-linear programming (NLP / MINLP) with Outer Approximation for non-convex crude blending pools.
-
----
 
 ## 👥 Team & Acknowledgments
 
