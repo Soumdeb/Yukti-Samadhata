@@ -1,4 +1,4 @@
-# Yutki-Samadhata (युक्ति-समाधाता)
+# Yukti-Samadhata (युक्ति-समाधाता)
 
 <div align="center">
 
@@ -7,7 +7,7 @@
 
 <br />
 
-# युक्ति-समाधाता — Yutki-Samadhata
+# युक्ति-समाधाता — Yukti-Samadhata
 ### Indigenous GPU-Accelerated Mathematical Optimization Solver Core
 **A Sovereign, First-Principles Alternative to FICO Xpress, IBM ILOG CPLEX, and Gurobi**
 
@@ -43,7 +43,7 @@
 
 </div>
 
-> **Yutki-Samadhata** (*युक्ति-समाधाता* — Sanskrit for *Strategic Reasoner & Problem Resolver*) is an indigenous, first-principles, high-performance mathematical optimization solver core engineered in 100% pure memory-safe Rust with native NVIDIA CUDA GPU acceleration and multi-core Rayon parallelization. Developed by **Team Caffeine Coders** for **Mangalore Refinery and Petrochemicals Limited (MRPL)** under **Problem Statement ID 26119**, it provides an uncompromised, sovereign alternative to foreign proprietary engines (IBM ILOG CPLEX, FICO Xpress, Gurobi) for mission-critical industrial scheduling, crude blending, power dispatch, and supply chain logistics.
+> **Yukti-Samadhata** (*युक्ति-समाधाता* — Sanskrit for *Strategic Reasoner & Problem Resolver*) is an indigenous, first-principles, high-performance mathematical optimization solver core engineered in 100% pure memory-safe Rust with native NVIDIA CUDA GPU acceleration and multi-core Rayon parallelization. Developed by **Team Caffeine Coders** for **Mangalore Refinery and Petrochemicals Limited (MRPL)** under **Problem Statement ID 26119**, it provides an uncompromised, sovereign alternative to foreign proprietary engines (IBM ILOG CPLEX, FICO Xpress, Gurobi) for mission-critical industrial scheduling, crude blending, power dispatch, and supply chain logistics.
 
 ---
 
@@ -53,7 +53,7 @@
 - [Key Highlights & Sovereign Innovations](#-key-highlights--sovereign-innovations)
 - [Core System Architecture](#-core-system-architecture)
 - [LP Optimization Engine Architecture](#-lp-optimization-engine-architecture)
-- [Empirical Results & Benchmark Validation](#-empirical-results--benchmark-validation-yutki-results)
+- [Empirical Results & Benchmark Validation](#-empirical-results--benchmark-validation-yukti-results)
 - [Mathematical Foundations & Dual Engines](#-mathematical-foundations--dual-engines)
 - [Numerical Stability & Rigorous Safeguards](#-numerical-stability--rigorous-safeguards)
 - [Competitive Benchmarks & Solver Comparison](#-competitive-benchmarks--solver-comparison)
@@ -93,7 +93,7 @@ These foreign engines sit directly behind continuous refinery scheduling, crude 
 2. **Proprietary Black-Box Architecture:** Zero visibility into internal algorithmic choices, pivot selection rules, barrier preconditioning, or factorization routines. Indian engineers cannot audit, customize, or inspect the solver core to accommodate specific domestic operational realities.
 3. **Geopolitical & Technological Vulnerability:** Complete dependence on foreign software creates strategic supply-chain and national security risks for vital public infrastructure (oil refineries, power grids, strategic petroleum reserves).
 4. **Limitations of Existing Open-Source Alternatives:** Existing open-source solvers (COIN-OR CBC, HiGHS, GLPK, SCIP) have advanced significantly, but often encounter severe computational bottlenecks, memory exhaustion, or divergence when exposed to large-scale, highly degenerate, ill-conditioned matrices typical of petrochemical refineries and crude blending networks.
-5. **No Derivative Wrapper Policy:** In accordance with the mandate, **Yutki-Samadhata is not a wrapper or binding around any existing open-source C/C++ solver library**. It is built **100% from first mathematical principles** from the ground up in memory-safe Rust.
+5. **No Derivative Wrapper Policy:** In accordance with the mandate, **Yukti-Samadhata is not a wrapper or binding around any existing open-source C/C++ solver library**. It is built **100% from first mathematical principles** from the ground up in memory-safe Rust.
 
 ---
 
@@ -102,8 +102,8 @@ These foreign engines sit directly behind continuous refinery scheduling, crude 
 - **100% Ground-Up Mathematical Formulation in Pure Rust:**
   Engineered with zero unsafe memory compromises, eliminating buffer overflows, memory leaks, and segmentation faults inherent in legacy Fortran/C/C++ solver codebases.
 - **Dual-Engine Continuous LP Core:**
-  - **Revised Simplex Engine (`yutki-lp::simplex`):** High-precision corner Basic Feasible Solutions (BFS), scaled partial-pivoting LU basis factorization, Harris two-pass ratio test, Dantzig and steepest-edge pricing, and Bland’s anti-cycling safeguards.
-  - **First-Order PDHG / PDLP Engine (`yutki-lp::pdhg`):** Primal-Dual Hybrid Gradient saddle-point solver designed for hyper-scale sparse linear programs where interior-point methods (IPM) or Simplex stall due to cubic factorization complexity.
+  - **Revised Simplex Engine (`yukti-lp::simplex`):** High-precision corner Basic Feasible Solutions (BFS), scaled partial-pivoting LU basis factorization, Harris two-pass ratio test, Dantzig and steepest-edge pricing, and Bland’s anti-cycling safeguards.
+  - **First-Order PDHG / PDLP Engine (`yukti-lp::pdhg`):** Primal-Dual Hybrid Gradient saddle-point solver designed for hyper-scale sparse linear programs where interior-point methods (IPM) or Simplex stall due to cubic factorization complexity.
   - **Interior Point Method (IPM) Interface:** Primal-dual path-following predictor-corrector foundation for dense constraint regimes.
 - **Pluggable Hardware Backends (CPU & GPU Acceleration):**
   - **Multi-Core CPU (Rayon):** Lock-free parallel linear algebra, multi-threaded matrix scaling, and sparse vector operations.
@@ -112,9 +112,9 @@ These foreign engines sit directly behind continuous refinery scheduling, crude 
   Continuous monitoring of matrix condition numbers, singular value bounds, degenerate pivot occurrences, basis condition degradation, and stagnation triggers with automatic adaptive step size and restart mechanisms.
 - **Presolve & Ruiz Matrix Equilibration:**
   Dynamic scaling balancing row and column $\ell_\infty$ norms to mitigate extreme numerical ranges ($> 10^7$) in refinery blending matrices before algorithmic dispatch.
-- **Non-Trusting Independent Verifier (`yutki-verifier`):**
+- **Non-Trusting Independent Verifier (`yukti-verifier`):**
   Completely decoupled validation engine that evaluates the raw unscaled original model against the computed primal-dual solution, independently certifying primal feasibility, dual feasibility, bounds compliance, and complementary slackness.
-- **Air-Gapped Sovereign Authentication (`yutki-auth`):**
+- **Air-Gapped Sovereign Authentication (`yukti-auth`):**
   Zero-network local security subsystem employing `Argon2id` password hashing and cryptographically secure recovery codes for industrial audit logging and operator access control.
 
 ---
@@ -123,11 +123,11 @@ These foreign engines sit directly behind continuous refinery scheduling, crude 
 
 <!-- Core System Architecture Tag -->
 <div align="center">
-  <img src="assets/core_system_architecture.png" alt="Yutki-Samadhata Core System Architecture" width="100%" />
-  <p><em>Figure 1: Comprehensive End-to-End Modular Architecture of Yutki-Samadhata (Problem Statement ID: 26119).</em></p>
+  <img src="assets/core_system_architecture.png" alt="Yukti-Samadhata Core System Architecture" width="100%" />
+  <p><em>Figure 1: Comprehensive End-to-End Modular Architecture of Yukti-Samadhata (Problem Statement ID: 26119).</em></p>
 </div>
 
-The Yutki-Samadhata architecture is organized into decoupled, high-cohesion subsystems adhering to strict clean-architecture and zero-falsification principles:
+The Yukti-Samadhata architecture is organized into decoupled, high-cohesion subsystems adhering to strict clean-architecture and zero-falsification principles:
 
 ### 1. Ingestion, Parsing & Validation Layer
 - **Rust CLI (`clap`) & Solver API:** High-throughput command-line interface, interactive sovereign terminal dashboard, and ergonomic programmatic Rust crate API.
@@ -150,7 +150,7 @@ The Yutki-Samadhata architecture is organized into decoupled, high-cohesion subs
   - **QP Engine:** Convex quadratic objective optimization with positive semi-definite (PSD) Hessian support.
 
 ### 5. Sparse Numerical Core & Hardware Acceleration
-- **Sparse Linear Algebra (`yutki-sparse`):** Cache-friendly compressed formats (`CsrMatrix`, `CscMatrix`, `CooMatrix`) optimized for SIMD vectorization.
+- **Sparse Linear Algebra (`yukti-sparse`):** Cache-friendly compressed formats (`CsrMatrix`, `CscMatrix`, `CooMatrix`) optimized for SIMD vectorization.
 - **LU Factorization with Scaled Partial Pivoting:** Numerically robust basis decomposition with Markowitz threshold pivoting to maintain sparsity and control fill-in during Simplex basis updates.
 - **Dual Hardware Backends:**
   - `CpuRustBackend`: Parallelized multi-threaded CPU routines via Rayon.
@@ -159,7 +159,7 @@ The Yutki-Samadhata architecture is organized into decoupled, high-cohesion subs
 ### 6. Numerical Monitor, Postsolve & Independent Verifier
 - **Numerical Monitor:** Real-time sentinel tracking basis stability, singular value boundaries, primal/dual residuals, and cycling indicators.
 - **Postsolve Engine:** Un-maps the solution vector back through the transformation pipeline into the exact coordinate space of the original model.
-- **Solution Verifier (`yutki-verifier`):** Standalone zero-trust verification module that computes $\|Ax - b\|_\infty$, bound violations, and duality gaps on the raw unscaled formulation.
+- **Solution Verifier (`yukti-verifier`):** Standalone zero-trust verification module that computes $\|Ax - b\|_\infty$, bound violations, and duality gaps on the raw unscaled formulation.
 
 ### 7. Cross-Cutting Runtime Services
 - Resource & execution time budgeting, structured JSON/CSV logging, benchmark harness, and air-gapped cryptographic authentication.
@@ -170,8 +170,8 @@ The Yutki-Samadhata architecture is organized into decoupled, high-cohesion subs
 
 <!-- LP Engine Tag -->
 <div align="center">
-  <img src="assets/lp_engine_architecture.png" alt="Yutki-Samadhata LP Optimization Engine Architecture" width="55%" />
-  <p><em>Figure 2: Algorithmic Pipeline and Control Flow of the Yutki-Samadhata Continuous LP Engine.</em></p>
+  <img src="assets/lp_engine_architecture.png" alt="Yukti-Samadhata LP Optimization Engine Architecture" width="55%" />
+  <p><em>Figure 2: Algorithmic Pipeline and Control Flow of the Yukti-Samadhata Continuous LP Engine.</em></p>
 </div>
 
 The continuous Linear Programming engine operates through a disciplined 6-tier control loop designed for extreme numerical resilience:
@@ -211,30 +211,30 @@ The **Postsolve Engine** applies the inverse coordinate map to restore original 
 
 ---
 
-## 📊 Empirical Results & Benchmark Validation (YUTKI Results)
+## 📊 Empirical Results & Benchmark Validation (YUKTI Results)
 
-To prove numerical stability on difficult industrial instances, Yutki-Samadhata was benchmarked against recognized optimization libraries including Netlib, MIPLIB, and Mittelmann benchmark collections.
+To prove numerical stability on difficult industrial instances, Yukti-Samadhata was benchmarked against recognized optimization libraries including Netlib, MIPLIB, and Mittelmann benchmark collections.
 
 ### 🧪 Live Solver Pipeline Execution: Netlib `AGG3` Benchmark
 Below is an authentic, unedited solver trace execution solving the challenging **`AGG3`** industrial linear program from the standard Netlib benchmark set:
 
-<!-- YUTKI Results Tag -->
+<!-- YUKTI Results Tag -->
 <div align="center">
   <table width="100%">
     <tr>
       <td width="50%" align="center">
-        <img src="assets/yutki_results_part1.png" alt="YUTKI Results - Stages 1 to 5" width="100%" />
+        <img src="assets/yukti_results_part1.png" alt="YUKTI Results - Stages 1 to 5" width="100%" />
         <br />
         <strong>Part 1: Stages 1–5 (Model Validation to Engine Execution)</strong>
       </td>
       <td width="50%" align="center">
-        <img src="assets/yutki_results_part2.png" alt="YUTKI Results - Stages 6 to 8 and Summary" width="100%" />
+        <img src="assets/yukti_results_part2.png" alt="YUKTI Results - Stages 6 to 8 and Summary" width="100%" />
         <br />
         <strong>Part 2: Stages 6–8 (Numerical Health, Verification & Summary)</strong>
       </td>
     </tr>
   </table>
-  <p><em>Figure 3: Real-time execution trace of Yutki-Samadhata solving Netlib industrial problem AGG3 with complete independent mathematical verification.</em></p>
+  <p><em>Figure 3: Real-time execution trace of Yukti-Samadhata solving Netlib industrial problem AGG3 with complete independent mathematical verification.</em></p>
 </div>
 
 ### 🔍 Stage-by-Stage Forensic Breakdown of `AGG3` Execution
@@ -263,14 +263,14 @@ Below is an authentic, unedited solver trace execution solving the challenging *
 | Total Wall Clock   : 0.6249 s                                                 |
 +-------------------------------------------------------------------------------+
 ```
-*Note: Netlib reference ground-truth objective for AGG3 is `1.0312115935e+07`. Yutki-Samadhata matches the exact mathematical reference to 7 decimal digits within 0.61 seconds.*
+*Note: Netlib reference ground-truth objective for AGG3 is `1.0312115935e+07`. Yukti-Samadhata matches the exact mathematical reference to 7 decimal digits within 0.61 seconds.*
 
 ---
 
 ## 🧮 Mathematical Foundations & Dual Engines
 
 ### 1. General Bounded Continuous Linear Program
-Yutki-Samadhata directly models and solves:
+Yukti-Samadhata directly models and solves:
 $$
 \begin{aligned}
 \min_{x \in \mathbb{R}^n} \quad & c^T x \\
@@ -323,11 +323,11 @@ For hyper-scale sparse linear programs where basis factorization fails due to me
 
 ## 🛡 Numerical Stability & Rigorous Safeguards
 
-Refinery optimization models (e.g. hydrocracker crude cut allocation, vacuum tower blending) feature severe matrix degeneracy, identical rows, and coefficient ranges spanning 8 to 10 orders of magnitude. Yutki-Samadhata implements 4 levels of numerical safeguards:
+Refinery optimization models (e.g. hydrocracker crude cut allocation, vacuum tower blending) feature severe matrix degeneracy, identical rows, and coefficient ranges spanning 8 to 10 orders of magnitude. Yukti-Samadhata implements 4 levels of numerical safeguards:
 
 ```
 +-------------------------------------------------------------------------------+
-|                 YUTKI-SAMADHATA NUMERICAL STABILITY SENTINEL                  |
+|                 YUKTI-SAMADHATA NUMERICAL STABILITY SENTINEL                  |
 +-------------------------------------------------------------------------------+
 | 1. Dynamic Ruiz Equilibration        : Normalizes ||Row_i|| and ||Col_j||     |
 | 2. Harris Two-Pass Ratio Test        : Neutralizes degenerate pivot stalling  |
@@ -345,7 +345,7 @@ where $R_{ii} = 1/\sqrt{\|A_{i, \cdot}^{(t)}\|_\infty}$ and $C_{jj} = 1/\sqrt{\|
 In the presence of degenerate basic feasible solutions ($\ge 1$ basic variables at zero), Bland's rule selects the entering and leaving candidate with the lowest variable index, mathematically guaranteeing the prevention of cyclic loops.
 
 ### 3. Decoupled Non-Trusting Solution Verifier
-Unlike commercial solvers that report optimality based solely on internal step tolerances, `yutki-verifier` is an independent crate that treats the solver engine as an unverified black box. It re-computes:
+Unlike commercial solvers that report optimality based solely on internal step tolerances, `yukti-verifier` is an independent crate that treats the solver engine as an unverified black box. It re-computes:
 - Primal feasibility violation: $e_{\text{primal}} = \max_{i} \left( \max(0, l_{c_i} - (Ax)_i), \max(0, (Ax)_i - u_{c_i}) \right)$
 - Bound violation: $e_{\text{bounds}} = \max_{j} \left( \max(0, l_{x_j} - x_j), \max(0, x_j - u_{x_j}) \right)$
 - Dual objective consistency: $|c^T x - b^T y|$
@@ -355,7 +355,7 @@ Unlike commercial solvers that report optimality based solely on internal step t
 
 ## ⚔️ Competitive Benchmarks & Solver Comparison
 
-| Capability / Benchmark Feature | **Yutki-Samadhata (युक्ति)** | IBM ILOG CPLEX | FICO Xpress | Gurobi Optimizer | HiGHS (Open Source) |
+| Capability / Benchmark Feature | **Yukti-Samadhata (युक्ति)** | IBM ILOG CPLEX | FICO Xpress | Gurobi Optimizer | HiGHS (Open Source) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Sovereignty & Origin** | 🇮🇳 **100% Indigenous (India)** | 🇺🇸 USA (IBM) | 🇺🇸/🇬🇧 USA/UK (FICO) | 🇺🇸 USA (Gurobi) | 🇬🇧 UK (Edinburgh) |
 | **Core Language** | **100% Pure Rust** | C / C++ | C / C++ | C / C++ | C++ |
@@ -364,7 +364,7 @@ Unlike commercial solvers that report optimality based solely on internal step t
 | **Built From Scratch (No Wrappers)** | **YES (Zero C++ solver deps)**| Proprietary Core | Proprietary Core | Proprietary Core | Standalone C++ Core |
 | **Native GPU Acceleration** | **YES (NVIDIA CUDA PTX)** | Restricted / Deprecated| Limited | No (CPU only) | No (CPU only) |
 | **First-Order LP (PDHG/PDLP)** | **Native Embedded** | No | No | Experimental | No |
-| **Decoupled Verification Engine** | **Built-in (`yutki-verifier`)**| Internal Flags Only | Internal Flags Only | Internal Flags Only | Internal Flags Only |
+| **Decoupled Verification Engine** | **Built-in (`yukti-verifier`)**| Internal Flags Only | Internal Flags Only | Internal Flags Only | Internal Flags Only |
 | **Air-Gapped Sovereign Auth** | **Built-in (`Argon2id`)** | None (OS Dependent) | None | None | None |
 | **Inspection & Customizability** | **100% Source Transparency**| Closed Black-Box | Closed Black-Box | Closed Black-Box | Open Source |
 
@@ -375,39 +375,39 @@ Unlike commercial solvers that report optimality based solely on internal step t
 The repository is structured as a modular Cargo workspace consisting of 11 decoupled crates:
 
 ```
-d:\Yutki-Samadhata\crates
-├── yutki-cli/         # Top-level executable, TUI dashboard, commands (solve, benchmark, doctor)
-├── yutki-lp/          # LP solver engine (Revised Simplex, PDHG, IPM, strategy dispatcher)
-├── yutki-gpu/         # Hardware compute backend trait, Rayon CPU & pure Rust CUDA PTX driver
-├── yutki-sparse/      # High-performance sparse formats (CSR, CSC, COO), LU factorization
-├── yutki-model/       # Sovereign LinearProgram representation and standard MPS parser
-├── yutki-numerics/    # Precision tolerances, conditioning fingerprints, Ruiz scaling
-├── yutki-transform/   # Elementary presolve passes (folding, bounds) and inverse postsolve map
-├── yutki-verifier/    # Decoupled, non-trusting solution validator
-├── yutki-auth/        # Air-gapped Argon2id authentication & recovery codes
-├── yutki-bench/       # Automated Netlib/MIPLIB batch runner and CSV/JSON reporter
-└── yutki-runtime/     # Structured event logging, telemetry traces, diagnostic sentinels
+d:\Yukti-Samadhata\crates
+├── yukti-cli/         # Top-level executable, TUI dashboard, commands (solve, benchmark, doctor)
+├── yukti-lp/          # LP solver engine (Revised Simplex, PDHG, IPM, strategy dispatcher)
+├── yukti-gpu/         # Hardware compute backend trait, Rayon CPU & pure Rust CUDA PTX driver
+├── yukti-sparse/      # High-performance sparse formats (CSR, CSC, COO), LU factorization
+├── yukti-model/       # Sovereign LinearProgram representation and standard MPS parser
+├── yukti-numerics/    # Precision tolerances, conditioning fingerprints, Ruiz scaling
+├── yukti-transform/   # Elementary presolve passes (folding, bounds) and inverse postsolve map
+├── yukti-verifier/    # Decoupled, non-trusting solution validator
+├── yukti-auth/        # Air-gapped Argon2id authentication & recovery codes
+├── yukti-bench/       # Automated Netlib/MIPLIB batch runner and CSV/JSON reporter
+└── yukti-runtime/     # Structured event logging, telemetry traces, diagnostic sentinels
 ```
 
 | Crate | Responsibility | Primary Module / Interface |
 | :--- | :--- | :--- |
-| **`yutki-cli`** | User-facing binary, interactive sovereign dashboard, and CLI dispatch. | `yutki-samadhata <solve\|benchmark\|doctor\|start>` |
-| **`yutki-lp`** | Dual optimization engines (Revised Simplex, PDHG/PDLP), step controllers. | `RevisedSimplexSolver`, `PdhgSolver`, `IpmSolver` |
-| **`yutki-gpu`** | Hardware abstraction, Rayon multi-core CPU and native NVIDIA CUDA driver API. | `ComputeBackend`, `CpuBackend`, `CudaBackend` |
-| **`yutki-sparse`** | Sparse matrix storage, BLAS-1 vector kernels, LU decomposition. | `CsrMatrix`, `CscMatrix`, `LuFactorization` |
-| **`yutki-model`** | Model data structures, bounds, objective sense, and production MPS parser. | `LinearProgram`, `Sense`, `Bound` |
-| **`yutki-numerics`** | Conditioning estimation, dynamic range diagnostics, and Ruiz scaling. | `NumericalTolerances`, `ConditionEstimator` |
-| **`yutki-transform`**| Presolve reductions (fixed variables, row scaling) & inverse postsolve. | `PresolveEngine`, `TransformationMap` |
-| **`yutki-verifier`** | Independent zero-trust post-solve verification against raw input. | `SolutionVerifier`, `VerificationReport` |
-| **`yutki-auth`** | Air-gapped Argon2id password hashing and recovery codes. | `LocalAuthManager`, `SessionAudit` |
-| **`yutki-bench`** | Batch benchmarking against Netlib and MIPLIB ground-truth sets. | `BenchmarkHarness`, `BenchmarkSummary` |
-| **`yutki-runtime`** | Structured event logging, telemetry traces, and diagnostic formatting. | `SolverTrace`, `SolverEvent` |
+| **`yukti-cli`** | User-facing binary, interactive sovereign dashboard, and CLI dispatch. | `yukti-samadhata <solve\|benchmark\|doctor\|start>` |
+| **`yukti-lp`** | Dual optimization engines (Revised Simplex, PDHG/PDLP), step controllers. | `RevisedSimplexSolver`, `PdhgSolver`, `IpmSolver` |
+| **`yukti-gpu`** | Hardware abstraction, Rayon multi-core CPU and native NVIDIA CUDA driver API. | `ComputeBackend`, `CpuBackend`, `CudaBackend` |
+| **`yukti-sparse`** | Sparse matrix storage, BLAS-1 vector kernels, LU decomposition. | `CsrMatrix`, `CscMatrix`, `LuFactorization` |
+| **`yukti-model`** | Model data structures, bounds, objective sense, and production MPS parser. | `LinearProgram`, `Sense`, `Bound` |
+| **`yukti-numerics`** | Conditioning estimation, dynamic range diagnostics, and Ruiz scaling. | `NumericalTolerances`, `ConditionEstimator` |
+| **`yukti-transform`**| Presolve reductions (fixed variables, row scaling) & inverse postsolve. | `PresolveEngine`, `TransformationMap` |
+| **`yukti-verifier`** | Independent zero-trust post-solve verification against raw input. | `SolutionVerifier`, `VerificationReport` |
+| **`yukti-auth`** | Air-gapped Argon2id password hashing and recovery codes. | `LocalAuthManager`, `SessionAudit` |
+| **`yukti-bench`** | Batch benchmarking against Netlib and MIPLIB ground-truth sets. | `BenchmarkHarness`, `BenchmarkSummary` |
+| **`yukti-runtime`** | Structured event logging, telemetry traces, and diagnostic formatting. | `SolverTrace`, `SolverEvent` |
 
 ---
 
 ## 🔒 Zero-Falsification Hardware Integrity Policy
 
-Yutki-Samadhata enforces an uncompromising engineering code of ethics:
+Yukti-Samadhata enforces an uncompromising engineering code of ethics:
 
 ```
 ================================================================================
@@ -436,14 +436,14 @@ When an operator requests `--backend gpu`, the engine genuinely queries the host
 
 ```bash
 # Clone the sovereign repository
-git clone https://github.com/your-username/yutki-samadhata.git
-cd yutki-samadhata
+git clone https://github.com/your-username/yukti-samadhata.git
+cd yukti-samadhata
 
 # Build release binary (100% pure Rust build with dynamic CUDA discovery)
 cargo build --release
 
 # The compiled binary is located at:
-# target/release/yutki-samadhata
+# target/release/yukti-samadhata
 ```
 
 ---
@@ -455,36 +455,36 @@ Launch the interactive terminal interface with local authentication, model inspe
 ```bash
 cargo run --release -- start
 # Or if installed:
-yutki-samadhata start
+yukti-samadhata start
 ```
 
 ### 2. Solving Industrial MPS Models
 ```bash
 # 1. Solve with Automatic Algorithm & Backend Selection
-yutki-samadhata solve -f datasets/netlib/agg3.mps --algorithm auto
+yukti-samadhata solve -f datasets/netlib/agg3.mps --algorithm auto
 
 # 2. Solve with Revised Simplex (Exact BFS corner solution & shadow prices)
-yutki-samadhata solve -f datasets/netlib/afiro.mps --algorithm simplex --backend cpu
+yukti-samadhata solve -f datasets/netlib/afiro.mps --algorithm simplex --backend cpu
 
 # 3. Solve with First-Order PDHG on GPU (Massive sparse scale)
-yutki-samadhata solve -f datasets/netlib/agg3.mps --algorithm pdhg --backend gpu
+yukti-samadhata solve -f datasets/netlib/agg3.mps --algorithm pdhg --backend gpu
 
 # 4. Suppress primal variable list for batch runs
-yutki-samadhata solve -f datasets/netlib/agg3.mps -v=false
+yukti-samadhata solve -f datasets/netlib/agg3.mps -v=false
 ```
 
 ### 3. Automated Benchmark Harness
 Run batch benchmark evaluations against standard Netlib or industrial suites with automated CSV/JSON reporting:
 ```bash
 # Benchmark Netlib suite with Revised Simplex against ground-truth CSV
-yutki-samadhata benchmark datasets/netlib \
+yukti-samadhata benchmark datasets/netlib \
   --algorithm simplex \
   --reference datasets/netlib/reference_netlib.csv \
   --csv benchmark_results/netlib_simplex_report.csv \
   --json benchmark_results/netlib_simplex_report.json
 
 # Benchmark with First-Order PDHG
-yutki-samadhata benchmark datasets/netlib \
+yukti-samadhata benchmark datasets/netlib \
   --algorithm pdhg \
   --backend cpu \
   --csv benchmark_results/netlib_pdhg_report.csv
@@ -493,21 +493,21 @@ yutki-samadhata benchmark datasets/netlib \
 ### 4. Hardware Diagnostic Sentinel ("Doctor")
 Inspect CPU topology, memory limits, NVIDIA GPU driver status, CUDA compute capability, and VRAM availability:
 ```bash
-yutki-samadhata doctor
+yukti-samadhata doctor
 ```
 
 ---
 
 ## 🔬 Rust API Integration Quickstart
 
-Integrate Yutki-Samadhata directly into your Rust refinery scheduling or process optimization pipelines:
+Integrate Yukti-Samadhata directly into your Rust refinery scheduling or process optimization pipelines:
 
 ```rust
 use std::path::Path;
-use yutki_model::LinearProgram;
-use yutki_lp::{RevisedSimplexSolver, SimplexOptions};
-use yutki_verifier::SolutionVerifier;
-use yutki_numerics::NumericalTolerances;
+use yukti_model::LinearProgram;
+use yukti_lp::{RevisedSimplexSolver, SimplexOptions};
+use yukti_verifier::SolutionVerifier;
+use yukti_numerics::NumericalTolerances;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 1. Ingest model from standard industrial MPS format
@@ -563,7 +563,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 This project is licensed under the **Apache License, Version 2.0**. See the [`LICENSE`](LICENSE) file for details.
 
 ```
-Copyright 2026 Team Caffeine Coders (Yutki-Samadhata Project)
+Copyright 2026 Team Caffeine Coders (Yukti-Samadhata Project)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

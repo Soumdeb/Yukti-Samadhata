@@ -1,0 +1,16 @@
+[package]
+name = "yukti-lp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-sparse = { path = "../yukti-sparse" }
+yukti-numerics = { path = "../yukti-numerics" }
+yukti-gpu = { path = "../yukti-gpu" }
+yukti-transform = { path = "../yukti-transform" }
+yukti-runtime = { path = "../yukti-runtime" }
+yukti-verifier = { path = "../yukti-verifier" }
+thiserror.workspace = true
+serde.workspace = true

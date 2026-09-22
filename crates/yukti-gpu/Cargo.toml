@@ -1,0 +1,13 @@
+[package]
+name = "yukti-gpu"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-sparse = { path = "../yukti-sparse" }
+thiserror.workspace = true
+serde.workspace = true
+rayon.workspace = true
+

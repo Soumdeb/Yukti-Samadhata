@@ -1,0 +1,10 @@
+[package]
+name = "yukti-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+serde.workspace = true
+serde_json.workspace = true

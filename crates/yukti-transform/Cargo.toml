@@ -1,0 +1,12 @@
+[package]
+name = "yukti-transform"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-sparse = { path = "../yukti-sparse" }
+yukti-numerics = { path = "../yukti-numerics" }
+thiserror.workspace = true
+serde.workspace = true

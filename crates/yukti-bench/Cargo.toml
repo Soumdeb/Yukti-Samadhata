@@ -1,0 +1,16 @@
+[package]
+name = "yukti-bench"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-lp = { path = "../yukti-lp" }
+yukti-transform = { path = "../yukti-transform" }
+yukti-gpu = { path = "../yukti-gpu" }
+yukti-numerics = { path = "../yukti-numerics" }
+yukti-runtime = { path = "../yukti-runtime" }
+yukti-verifier = { path = "../yukti-verifier" }
+serde.workspace = true
+serde_json.workspace = true

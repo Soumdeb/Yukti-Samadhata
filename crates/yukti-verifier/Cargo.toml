@@ -1,0 +1,11 @@
+[package]
+name = "yukti-verifier"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-sparse = { path = "../yukti-sparse" }
+yukti-numerics = { path = "../yukti-numerics" }
+serde.workspace = true

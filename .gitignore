@@ -1,5 +1,5 @@
 # =============================================================================
-# Yutki-Samadhata Production .gitignore
+# Yukti-Samadhata Production .gitignore
 # Standard security, build artifact, and environment exclusion rules
 # =============================================================================
 
@@ -32,8 +32,8 @@ cargo-timing*.html
 auth_store.json
 *.auth.json
 auth.json
-.yutki/
-yutki_auth*
+.yukti/
+yukti_auth*
 *.session
 
 # --- Native C++ & CUDA Build Artifacts ---
