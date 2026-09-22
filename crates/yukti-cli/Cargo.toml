@@ -1,0 +1,22 @@
+[package]
+name = "yukti-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "yukti-samadhata"
+path = "src/main.rs"
+
+[dependencies]
+yukti-model = { path = "../yukti-model" }
+yukti-sparse = { path = "../yukti-sparse" }
+yukti-numerics = { path = "../yukti-numerics" }
+yukti-transform = { path = "../yukti-transform" }
+yukti-gpu = { path = "../yukti-gpu" }
+yukti-lp = { path = "../yukti-lp" }
+yukti-verifier = { path = "../yukti-verifier" }
+yukti-auth = { path = "../yukti-auth" }
+yukti-runtime = { path = "../yukti-runtime" }
+yukti-bench = { path = "../yukti-bench" }
+clap.workspace = true
