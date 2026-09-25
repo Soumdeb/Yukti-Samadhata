@@ -1,8 +1,8 @@
 instance,objective,status,description
 afiro.mps,-464.753142857143,OPTIMAL,Netlib Afiro (27 rows, 32 cols)
 agg.mps,-35991767.287,OPTIMAL,Netlib Agg (488 rows, 163 cols)
-agg2.mps,-20239234.331,OPTIMAL,Netlib Agg2 (516 rows, 302 cols)
-agg3.mps,10312110.222,OPTIMAL,Netlib Agg3 (516 rows, 302 cols)
+agg2.mps,-20239252.356,OPTIMAL,Netlib Agg2 (516 rows, 302 cols)
+agg3.mps,10312115.935089,OPTIMAL,Netlib Agg3 (516 rows, 302 cols)
 bandm.mps,-158.62801845,OPTIMAL,Netlib Bandm (305 rows, 472 cols)
-bnl1.mps,1977.6295615,OPTIMAL,Netlib Bnl1 (643 rows, 1175 cols)
+bnl1.mps,1977.6292856,OPTIMAL,Netlib Bnl1 (643 rows, 1175 cols)
 bnl2.mps,1811.2365404,OPTIMAL,Netlib Bnl2 (2324 rows, 3489 cols)
