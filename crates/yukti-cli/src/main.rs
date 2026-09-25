@@ -755,7 +755,8 @@ fn execute_solve(
             gap_tol: 1e-6,
             max_iterations: 25000,
             time_limit_secs: 120.0,
-            check_frequency: 20,
+            check_frequency: 5,
+            verbose: true,
             ..Default::default()
         };
         let solver = yukti_lp::PdhgSolver::new(options);
@@ -1010,11 +1011,21 @@ fn run_solve(
     show_variables: bool,
 ) {
     print_banner();
-    println!("  [SOLVE] Loading MPS model: {}", file_path.display());
-    println!("  [SOLVE] Target Backend   : {backend}");
-    println!("  [SOLVE] Target Algorithm : {algorithm:?}");
+    println!("Parsing MPS file: {}...", file_path.display());
     match yukti_model::parse_mps_file(file_path.to_str().unwrap_or_default()) {
         Ok(problem) => {
+            let rows = problem.num_constraints();
+            let columns = problem.num_variables();
+            let num_slacks = problem
+                .row_bounds
+                .iter()
+                .filter(|b| !b.is_fixed(1e-9) && !b.is_free())
+                .count();
+            println!("Added {num_slacks} slack/surplus variables.");
+            println!(
+                "Original A shape: ({}, {}) | Standardized A shape: ({}, {})",
+                rows, columns, rows, columns + num_slacks
+            );
             let _ = execute_solve(&problem, backend, algorithm, show_variables);
         }
         Err(e) => {
@@ -1481,7 +1492,7 @@ fn run_dashboard(
     session: yukti_auth::Session,
     default_backend: BackendType,
 ) {
-    let mut last_trace: Option<SolverTrace> = None;
+    let last_trace: Option<SolverTrace> = None;
 
     loop {
         println!("  ==============================");
@@ -1489,13 +1500,12 @@ fn run_dashboard(
         println!("  SOLVER DASHBOARD");
         println!("  Operator: {}", session.username);
         println!("  ==============================");
-        println!("  [1] Solve MPS File");
-        println!("  [2] Run Benchmark");
-        println!("  [3] View Last Solver Trace");
-        println!("  [4] System / GPU Info");
-        println!("  [5] Logout");
+        println!("  [1] Run Benchmark");
+        println!("  [2] View Last Solver Trace");
+        println!("  [3] System / GPU Info");
+        println!("  [4] Logout");
         println!();
-        print!("  Select an option [1-5]: ");
+        print!("  Select an option [1-4]: ");
         let _ = io::stdout().flush();
 
         let mut input = String::new();
@@ -1505,43 +1515,6 @@ fn run_dashboard(
 
         match input.trim() {
             "1" => {
-                let chosen_backend = prompt_backend(default_backend);
-                let chosen_algo = prompt_algorithm(SolverAlgorithm::Auto);
-                println!(
-                    "\n  [DEMO] Loading production planning LP (examples/demo/production.mps)..."
-                );
-                let demo_path = if PathBuf::from("examples/demo/production.mps").exists() {
-                    "examples/demo/production.mps"
-                } else {
-                    "datasets/netlib/afiro.mps"
-                };
-                match yukti_model::parse_mps_file(demo_path) {
-                    Ok(problem) => {
-                        last_trace = execute_solve(&problem, chosen_backend, chosen_algo, false);
-                    }
-                    Err(e) => println!("  Failed to load demo model: {e}\n"),
-                }
-            }
-            "2" => {
-                print!("\n  Enter path to MPS file: ");
-                let _ = io::stdout().flush();
-                let mut path = String::new();
-                if io::stdin().read_line(&mut path).is_ok() {
-                    let clean_path = path.trim();
-                    if !clean_path.is_empty() {
-                        let chosen_backend = prompt_backend(default_backend);
-                        let chosen_algo = prompt_algorithm(SolverAlgorithm::Auto);
-                        match yukti_model::parse_mps_file(clean_path) {
-                            Ok(problem) => {
-                                last_trace =
-                                    execute_solve(&problem, chosen_backend, chosen_algo, false);
-                            }
-                            Err(e) => println!("  Failed to load MPS: {e}\n"),
-                        }
-                    }
-                }
-            }
-            "3" => {
                 print!(
                     "\n  Enter benchmark directory or MPS file path [default: datasets/netlib]: "
                 );
@@ -1585,20 +1558,20 @@ fn run_dashboard(
                     true,
                 );
             }
-            "4" => {
+            "2" => {
                 view_solver_trace(last_trace.as_ref());
             }
-            "5" => {
+            "3" => {
                 run_doctor();
             }
-            "6" => {
+            "4" => {
                 let op = session.username.clone();
                 auth.logout(session);
                 println!("\n  Operator '{op}' logged out successfully. Session terminated.\n");
                 break;
             }
             _ => {
-                println!("\n  Invalid selection. Please choose 1-6.\n");
+                println!("\n  Invalid selection. Please choose 1-4.\n");
             }
         }
     }
