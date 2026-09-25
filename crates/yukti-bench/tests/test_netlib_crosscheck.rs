@@ -10,18 +10,24 @@ fn workspace_root() -> PathBuf {
 #[test]
 fn test_benchmark_single_mps_file_netlib_agg3() {
     let agg3_path = workspace_root().join("datasets/netlib/agg3.mps");
+    let ref_path = workspace_root().join("datasets/netlib/reference_netlib.csv");
     assert!(agg3_path.exists(), "datasets/netlib/agg3.mps must exist");
+    assert!(ref_path.exists(), "reference_netlib.csv must exist");
+
+    let refs = ReferenceResults::load_from_file(&ref_path).expect("Reference results must parse");
 
     let config = BenchmarkConfig {
-        backend_type: BackendType::Auto,
-        algorithm: SolverAlgorithm::Pdhg,
-        time_limit_secs: 5.0,
-        max_iterations: 1000,
-        tolerance: 1e-4,
+        backend_type: BackendType::Cpu,
+        algorithm: SolverAlgorithm::Auto,
+        time_limit_secs: 20.0,
+        max_iterations: 10_000,
+        tolerance: 1e-6,
         show_variables: true,
     };
 
-    let runner = BenchmarkRunner::new(config).with_show_stages(false);
+    let runner = BenchmarkRunner::new(config)
+        .with_reference_results(refs)
+        .with_show_stages(false);
     let report = runner
         .run_directory(&agg3_path)
         .expect("Single file benchmark run should succeed");
@@ -36,6 +42,14 @@ fn test_benchmark_single_mps_file_netlib_agg3() {
     assert_eq!(entry.rows, 516);
     assert_eq!(entry.columns, 302);
     assert_eq!(entry.nonzeros, 4300);
+    assert_eq!(entry.status, "CONVERGED");
+    // Official Netlib optimal value: 1.0312115935E+07
+    assert!(
+        (entry.objective - 10312115.935089).abs() < 1e-2,
+        "Expected 10312115.935089 (1.0312115935E+07), got {}",
+        entry.objective
+    );
+    assert_eq!(entry.status_match, Some(true));
     assert!(entry.runtime_secs >= 0.0);
 }
 
