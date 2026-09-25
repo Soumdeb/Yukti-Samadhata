@@ -1215,34 +1215,19 @@ impl BenchmarkRunner {
             p.display()
         );
 
-        for (idx, file_path) in files.iter().enumerate() {
-            let inst_str = file_path
-                .file_name()
-                .and_then(|s| s.to_str())
-                .unwrap_or("unknown");
-            if !self.show_stages {
-                print!(
-                    "  [{}/{}] Evaluating {}... ",
-                    idx + 1,
-                    files.len(),
-                    inst_str
-                );
-                let _ = std::io::stdout().flush();
-            } else {
-                println!(
-                    "\n  >>> Evaluating Benchmark Instance [{}/{}]: {} <<<",
-                    idx + 1,
-                    files.len(),
-                    inst_str
-                );
-            }
+        for (_idx, file_path) in files.iter().enumerate() {
             let entry = self.run_instance(file_path);
-            if !self.show_stages {
-                println!(
-                    "-> status: {}, obj: {:.6}, time: {:.4}s",
-                    entry.status, entry.objective, entry.runtime_secs
-                );
-            }
+            let status_display = match entry.status.as_str() {
+                "CONVERGED" | "Optimal" => "Success",
+                other => other,
+            };
+            println!(
+                "{:<13} | {:<20} | {:<18.4} | {:.4}",
+                entry.instance,
+                status_display,
+                entry.objective,
+                entry.runtime_secs
+            );
             report.add_entry(entry);
         }
 
@@ -1299,6 +1284,8 @@ impl BenchmarkRunner {
         let start_time = Instant::now();
         let mut warnings = Vec::new();
 
+        println!("Parsing MPS file: {}...", p.display());
+
         // 1. Attempt MPS loading
         let problem = match yukti_model::parse_mps_file(p.to_str().unwrap_or_default()) {
             Ok(prob) => prob,
@@ -1334,13 +1321,22 @@ impl BenchmarkRunner {
         let columns = problem.num_variables();
         let nonzeros = problem.num_nonzeros();
 
+        let num_slacks = problem
+            .row_bounds
+            .iter()
+            .filter(|b| !b.is_fixed(1e-9) && !b.is_free())
+            .count();
+        println!("Added {num_slacks} slack/surplus variables.");
+        println!(
+            "Original A shape: ({}, {}) | Standardized A shape: ({}, {})",
+            rows, columns, rows, columns + num_slacks
+        );
+
         let use_simplex = match self.config.algorithm {
             SolverAlgorithm::Simplex => true,
             SolverAlgorithm::Pdhg => false,
             SolverAlgorithm::Ipm => false,
             SolverAlgorithm::Auto => {
-                // Revised Simplex is preferred for small-to-moderate models (<= 2000 constraints, <= 5000 variables)
-                // providing exact corner BFS and dual multipliers, while PDHG is preferred for massive scale models or GPU.
                 rows <= 2000 && columns <= 5000 && self.config.backend_type != BackendType::Gpu
             }
         };
