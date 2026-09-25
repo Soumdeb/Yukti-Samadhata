@@ -103,7 +103,7 @@ pub struct PdhgOptions {
     pub max_iterations: usize,
     /// Maximum wall-clock time in seconds (default: 300.0)
     pub time_limit_secs: f64,
-    /// Frequency (iterations) of residual checking and convergence tests (default: 20)
+    /// Frequency (iterations) of residual checking and convergence tests (default: 5)
     pub check_frequency: usize,
     /// Step size safety damping factor in (0, 1) (default: 0.95)
     pub step_damping: f64,
@@ -111,6 +111,8 @@ pub struct PdhgOptions {
     pub enable_presolve: bool,
     /// Desired compute backend (CPU, GPU, AUTO) (default: Auto)
     pub backend_type: BackendType,
+    /// Enable periodic progress logging to stdout (default: true)
+    pub verbose: bool,
 }
 
 impl Default for PdhgOptions {
@@ -121,10 +123,11 @@ impl Default for PdhgOptions {
             gap_tol: 1e-6,
             max_iterations: 50_000,
             time_limit_secs: 300.0,
-            check_frequency: 20,
+            check_frequency: 5,
             step_damping: 0.95,
             enable_presolve: true,
             backend_type: BackendType::Auto,
+            verbose: true,
         }
     }
 }
@@ -453,6 +456,17 @@ impl PdhgSolver {
         ) {
             let final_obj =
                 compute_final_objective(&c, lp.objective.offset, &state.x_avg, is_maximize);
+            if self.options.verbose {
+                println!("\n--- Running Engine on: cpu ---");
+                println!(
+                    "Iter {:<4} | Objective = {:<12.6} | Gap = {:.3e} | |r_b| = {:.3e} | |r_c| = {:.3e}",
+                    0,
+                    final_obj,
+                    last_residuals.duality_gap_rel,
+                    last_residuals.primal_rel,
+                    last_residuals.dual_rel
+                );
+            }
             return Ok(PdhgResult {
                 status,
                 primal_solution: state.x_avg,
@@ -464,6 +478,20 @@ impl PdhgSolver {
                 backend_name: info.name,
                 timing_profile: backend.timing_profile(),
             });
+        }
+
+        if self.options.verbose {
+            println!("\n--- Running Engine on: cpu ---");
+            let initial_obj =
+                compute_final_objective(&c, lp.objective.offset, &state.x_avg, is_maximize);
+            println!(
+                "Iter {:<4} | Objective = {:<12.6} | Gap = {:.3e} | |r_b| = {:.3e} | |r_c| = {:.3e}",
+                0,
+                initial_obj,
+                last_residuals.duality_gap_rel,
+                last_residuals.primal_rel,
+                last_residuals.dual_rel
+            );
         }
 
         let mut final_status = PdhgStatus::IterationLimit;
@@ -527,6 +555,20 @@ impl PdhgSolver {
                     &state.y_avg,
                 )?;
 
+                let current_obj =
+                    compute_final_objective(&c, lp.objective.offset, &state.x_avg, is_maximize);
+
+                if self.options.verbose {
+                    println!(
+                        "Iter {:<4} | Objective = {:<12.6} | Gap = {:.3e} | |r_b| = {:.3e} | |r_c| = {:.3e}",
+                        state.iteration,
+                        current_obj,
+                        last_residuals.duality_gap_rel,
+                        last_residuals.primal_rel,
+                        last_residuals.dual_rel
+                    );
+                }
+
                 let current_err = last_residuals
                     .primal_rel
                     .max(last_residuals.dual_rel)
@@ -542,9 +584,6 @@ impl PdhgSolver {
                     final_status = status;
                     break;
                 }
-
-                let current_obj =
-                    compute_final_objective(&c, lp.objective.offset, &state.x_avg, is_maximize);
 
                 // Run Numerical Monitor health checks (monitoring residuals, obj change, step norms, NaN/Inf, stagnation)
                 let verdict = monitor.check_step(
@@ -604,6 +643,17 @@ impl PdhgSolver {
         }
 
         let final_obj = compute_final_objective(&c, lp.objective.offset, &state.x_avg, is_maximize);
+
+        if self.options.verbose && !state.iteration.is_multiple_of(self.options.check_frequency) {
+            println!(
+                "Iter {:<4} | Objective = {:<12.6} | Gap = {:.3e} | |r_b| = {:.3e} | |r_c| = {:.3e}",
+                state.iteration,
+                final_obj,
+                last_residuals.duality_gap_rel,
+                last_residuals.primal_rel,
+                last_residuals.dual_rel
+            );
+        }
 
         // Invert dual multipliers back to standard LP shadow price convention (lambda = -y)
         let dual_solution: Vec<f64> = state.y_avg.iter().map(|&yi| -yi).collect();
